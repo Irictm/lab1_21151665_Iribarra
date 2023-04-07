@@ -1,17 +1,23 @@
 #lang racket
 (provide user)
 
-; TDA drive
-; Constructores: user
-; Selectores: 
-; Pertenencia: 
-; Modificadores:
-; Otras Funciones:
+; TDA user
+; Representacion:
 
-(define user (lambda (nombre_usuario) (cons nombre_usuario (cons "Estado: logged-out" null))))
+
+;---- Constructores ----;
+
+(define user (lambda user_name user_name))
 ; Nombre: user
-; Dominio: nombre_usuario(string)
-; Recorrido: system (par)
-; Descripcion: Funcion constructora de user, recibe un strings y entrega
-;              una lista construida a traves de pares que el nombre del
-;              usuario y un string que informa del estado del usuario (logged-in o logged-out).
+; Dominio: user_name(string)
+; Recorrido: user (string)
+; Descripcion: Funcion constructora de user, recibe un strings y entrega un
+;              usuario.
+
+;---- Selectores ----;
+
+;---- Pertenencia ----;
+
+;---- Modificadores ----;
+
+;---- Otras Funciones ----;
