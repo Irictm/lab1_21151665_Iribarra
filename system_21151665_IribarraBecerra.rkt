@@ -19,6 +19,14 @@
 ;              un string indicando que no existe usuario actual y la fecha de creacion.
 ; FALTA DEJAR REGISTRO DE FECHA;
 
+(define system_recreate (lambda (sys_name sys_drive sys_users sys_path sys_act_user sys_date)
+                          (list sys_name sys_drive sys_users sys_path sys_act_user sys_date)
+                          ))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
 
 ;---- Selectores ----;
 
@@ -72,8 +80,14 @@
 ;              retornar el systema con la funcion aplicada a traves del uso de "compose")
 ; FALTA DEJAR REGISTRO DE FECHA;
 
-(define add-drive (lambda (systema) (lambda (letra nombre capacidad)
-                                    (null)
+(define add-drive (lambda (sys) (lambda (letter name capacity)
+                                    (system_recreate
+                                     (system_name sys)
+                                     (drives_add_drive (system_drives sys) letter name capacity)
+                                     (system_users sys)
+                                     (system_path sys)
+                                     (system_active_user sys)
+                                     (system_creation_date sys))
                                     )))
 ; Nombre: add-drive
 ; Dominio: system X letra (char) X nombre (String) X capacidad (int)
@@ -82,8 +96,14 @@
 ;              y una capacidad para crear un drive con estas especificaciones y lo agrega
 ;              al sistema (el cual retorna).
 
-(define register (lambda (systema) (lambda (nombre_usuario)
-                                   (null)
+(define register (lambda (sys) (lambda (name)
+                                   (system_recreate
+                                     (system_name sys)
+                                     (system_drives sys)
+                                     (add_user (system_users sys) name)
+                                     (system_path sys)
+                                     (system_active_user sys)
+                                     (system_creation_date sys))
                                    )))
 ; Nombre: register
 ; Dominio: nombre_usuario(string)

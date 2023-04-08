@@ -1,5 +1,5 @@
 #lang racket
-(provide drives_empty add_drive drives_empty?)
+(provide drives_empty drives_add_drive drives_empty?)
 (require "drive_21151665_IribarraBecerra.rkt" "generic-functions_21151665_IribarraBecerra.rkt")
 
 ; TDA drives
@@ -14,7 +14,7 @@
 ; Recorrido: 
 ; Descripcion:
 
-(define add_drive (lambda (drives_list letter name capacity)
+(define drives_add_drive (lambda (drives_list letter name capacity)
                     (add_not_duped_value drives_list (drive letter name capacity) drives_empty? drives_empty)
                     ))
 ; Nombre: 
