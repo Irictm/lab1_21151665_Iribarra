@@ -111,5 +111,36 @@
 ; Descripcion: Funcion modificadora de system, recibe un systema y un nombre de usuario
 ;              para crear un usuario con estas especificaciones y lo agrega al sistema (el cual retorna).
 
+(define login (lambda (sys) (lambda (u_name)
+                              (if (users_exists_user? (system_users sys) u_name)
+                                  (system_recreate
+                                     (system_name sys)
+                                     (system_drives sys)
+                                     (system_users sys)
+                                     (system_path sys)
+                                     u_name
+                                     (system_creation_date sys))
+                                  sys
+                              ))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define logout (lambda (sys) (system_recreate
+                                     (system_name sys)
+                                     (system_drives sys)
+                                     (system_users sys)
+                                     (system_path sys)
+                                     "NO ACTIVE USER"
+                                     (system_creation_date sys)    
+                              )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
 
 ;---- Otras Funciones ----;
+
+(define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) "c" "Drive01" 123456789) add-drive) "d" "DriveFunky" 987654321) add-drive) "e" "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))
