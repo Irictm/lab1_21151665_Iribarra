@@ -1,6 +1,7 @@
 #lang racket
 (require "drive_21151665_IribarraBecerra.rkt" "drives_21151665_IribarraBecerra.rkt"
-         "user_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt")
+         "user_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt"
+         "path_21151665_IribarraBecerra.rkt")
 
 ; TDA system
 ; Representacion:
@@ -9,14 +10,15 @@
 ;---- Constructores ----;
 
 (define system (lambda (sys_name)
-                 (list sys_name drives_empty users_empty "path_empty" "NO ACTIVE USER" "Fecha (placeholder)")))
+                 (list sys_name drives_empty users_empty path_empty "" "Fecha (placeholder)")))
 ; Nombre: system
 ; Dominio: sys_name(string)
 ; Recorrido: system (list)
 ; Descripcion: Funcion constructora del systema, recibe un string y entrega
 ;              una lista construida a traves de pares que contiene el nombre del systema,
-;              una lista de drives vacia, una lista de usuarios vacia, el path actual vacio,
-;              un string indicando que no existe usuario actual y la fecha de creacion.
+;              una lista de drives vacia, una lista de usuarios vacia, el path actual
+;              representado por una lista vacia, un string indicando que no existe
+;              usuario actual y la fecha de creacion.
 ; FALTA DEJAR REGISTRO DE FECHA;
 
 (define system_recreate (lambda (sys_name sys_drive sys_users sys_path sys_act_user sys_date)
@@ -69,6 +71,13 @@
 
 ;---- Pertenencia ----;
 
+(define system_user_logged? (lambda (sys)
+                              (if (equal? (system_active_user sys) "") false true)
+                              ))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Modificadores ----;
 
@@ -132,7 +141,7 @@
                                      (system_drives sys)
                                      (system_users sys)
                                      (system_path sys)
-                                     "NO ACTIVE USER"
+                                     ""
                                      (system_creation_date sys)    
                               )))
 ; Nombre: 
@@ -140,6 +149,17 @@
 ; Recorrido: 
 ; Descripcion:
 
+(define switch-drive (lambda (sys) (lambda (letter)
+                                     (if (and (system_user_logged? sys) (drives_exists_drive? (system_drives sys) letter))
+                                          (system_recreate
+                                          (system_name sys)
+                                          (system_drives sys)
+                                          (system_users sys)
+                                          (path_add_location letter (system_path sys))
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                                         sys
+                                     ))))
 
 ;---- Otras Funciones ----;
 
