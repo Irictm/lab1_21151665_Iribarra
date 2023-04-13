@@ -1,5 +1,5 @@
 #lang racket
-(provide drives_empty drives_add_drive drives_empty? drives_exists_drive?)
+(provide drives_empty drives_add_drive drives_empty? drives_exists_drive? drives_drive_add_folder)
 (require "drive_21151665_IribarraBecerra.rkt" "generic-functions_21151665_IribarraBecerra.rkt")
 
 ; TDA drives
@@ -15,7 +15,7 @@
 ; Descripcion:
 
 (define drives_add_drive (lambda (drives_list letter name capacity)
-                    (add_not_duped_value drives_list (drive letter name capacity) drives_empty? drives_empty)
+                    (add_not_duped_value drives_list (drive letter name capacity null) drives_empty? drives_empty)
                     ))
 ; Nombre: 
 ; Dominio: 
@@ -46,5 +46,16 @@
 
 ;---- Modificadores ----;
 
+(define drives_drive_add_folder (lambda (drives_list drv_name fldr_name path)
+                                  (if (drives_empty? drives_list)
+                                      (drives_list)
+                                      (if (equal? (caar drives_list) drv_name)
+                                          (cons (drive_add_folder (car drives_list) fldr_name path) (cdr drives_list))
+                                          (cons (car drives_list) (drives_drive_add_folder (cdr drives_list) drv_name fldr_name path)
+                                  )))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Otras Funciones ----;

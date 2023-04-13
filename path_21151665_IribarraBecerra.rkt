@@ -13,7 +13,7 @@
 ; Recorrido: 
 ; Descripcion: 
 
-(define path_add_location cons)
+(define path_add_location (lambda (path_original location) (append path_original (cons location null))))
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 

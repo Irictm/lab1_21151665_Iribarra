@@ -1,7 +1,7 @@
 #lang racket
 (require "drive_21151665_IribarraBecerra.rkt" "drives_21151665_IribarraBecerra.rkt"
          "user_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt"
-         "path_21151665_IribarraBecerra.rkt")
+         "path_21151665_IribarraBecerra.rkt" "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA system
 ; Representacion:
@@ -155,12 +155,32 @@
                                           (system_name sys)
                                           (system_drives sys)
                                           (system_users sys)
-                                          (path_add_location letter (system_path sys))
+                                          (cons letter path_empty)
                                           (system_active_user sys)
                                           (system_creation_date sys))
                                          sys
                                      ))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define md (lambda (sys) (lambda (name)
+                           (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_add_folder (system_drives sys) (car (system_path sys)) name (system_path sys))
+                                          (system_users sys)
+                                          (path_add_location (system_path sys) name)
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                           )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Otras Funciones ----;
 
 (define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) "c" "Drive01" 123456789) add-drive) "d" "DriveFunky" 987654321) add-drive) "e" "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))
+(define S1 ((run ((run S0 login) "Fernando Iribarra") switch-drive) "c"))
+(define S2 ((run ((run ((run S1 md) "Folder01") md) "fulder") md) "dalder"))
