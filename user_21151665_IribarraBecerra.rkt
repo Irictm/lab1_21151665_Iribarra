@@ -11,8 +11,8 @@
 ; Nombre: user
 ; Dominio: user_name(string)
 ; Recorrido: user (string)
-; Descripcion: Funcion constructora de user, recibe un strings y entrega un
-;              usuario.
+; Descripcion: Funcion constructora de user, recibe un nombre y entrega un
+;              usuario con ese nombre.
 
 ;---- Selectores ----;
 
