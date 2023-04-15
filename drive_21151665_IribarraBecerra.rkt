@@ -1,6 +1,6 @@
 #lang racket
 (provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder)
-(require "folder_21151665_IribarraBecerra.rkt" "generic-functions_21151665_IribarraBecerra.rkt")
+(require "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA drive
 ; Representacion:

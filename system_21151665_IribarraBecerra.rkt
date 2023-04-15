@@ -29,6 +29,19 @@
 ; Recorrido: 
 ; Descripcion:
 
+(define system_change_path (lambda (sys path_list)
+                             (system_recreate
+                                     (system_name sys)
+                                     (system_drives sys)
+                                     (system_users sys)
+                                      path_list
+                                     (system_active_user sys)
+                                     (system_creation_date sys)
+                                     )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Selectores ----;
 
@@ -151,13 +164,7 @@
 
 (define switch-drive (lambda (sys) (lambda (letter)
                                      (if (and (system_user_logged? sys) (drives_exists_drive? (system_drives sys) letter))
-                                          (system_recreate
-                                          (system_name sys)
-                                          (system_drives sys)
-                                          (system_users sys)
-                                          (cons letter path_empty)
-                                          (system_active_user sys)
-                                          (system_creation_date sys))
+                                         (system_change_path sys (cons letter path_empty))
                                          sys
                                      ))))
 ; Nombre: 
@@ -170,7 +177,7 @@
                                           (system_name sys)
                                           (drives_drive_add_folder (system_drives sys) (car (system_path sys)) name (system_path sys))
                                           (system_users sys)
-                                          (path_add_location (system_path sys) name)
+                                          (path_add_location (system_path sys) (cons name null))
                                           (system_active_user sys)
                                           (system_creation_date sys))
                            )))
@@ -178,6 +185,23 @@
 ; Dominio: 
 ; Recorrido: 
 ; Descripcion:
+
+(define cd (lambda (sys) (lambda (new_location)
+                           (if (equal? new_location "...")
+                               (system_change_path sys (path_add_location path_empty (car (system_path sys))))
+                               (if (equal? new_location "/")
+                                   (system_change_path sys (path_previous_location (system_path sys)))
+                                   (if (path_string_single_location? new_location)
+                                       (system_change_path sys
+                                        (path_add_location (list (car (system_path sys))) new_location))
+                                       (system_change_path sys
+                                        (path_add_location (list (car (system_path sys))) (path_string_to_path new_location))))
+                            )))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+; FALTA VERIFICAR SI LA LOCACION EXISTE ANTES DE CAMBIAR Y ARREGLAR ERROR AL ENTREGAR PATH ENTERO
 
 ;---- Otras Funciones ----;
 

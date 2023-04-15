@@ -35,25 +35,25 @@
 ;---- Selectores ----;
 
 (define folder_name car)
-; Nombre: folder_
+; Nombre: folder_name
 ; Dominio: folder
 ; Recorrido: string
 ; Descripcion: Funcion que recibe un folder y retorna su nombre.
 
 (define folder_inside cadr)
-; Nombre: folder_
+; Nombre: folder_inside
 ; Dominio: folder
 ; Recorrido: list
 ; Descripcion: Funcion que recibe un folder y retorna el interior de este.
 
 (define folder_creation_date caddr)
-; Nombre: folder_
+; Nombre: folder_creation_date
 ; Dominio: folder
 ; Recorrido: date
 ; Descripcion: Funcion que recibe un folder y retorna su fecha de creacion.
 
 (define folder_last_mod_date cadddr)
-; Nombre: folder_
+; Nombre: folder_last_mod_date
 ; Dominio: folder
 ; Recorrido: date
 ; Descripcion: Funcion que recibe un folder y retorna su fecha de ultima modificacion.
@@ -66,7 +66,6 @@
 ; Dominio: folder
 ; Recorrido: bool
 ; Descripcion: Funcion que recibe un folder y retorna #t si se encuentra vacio o #f caso contrario.
-
 
 ;---- Modificadores ----;
 
