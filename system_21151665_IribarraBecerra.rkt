@@ -1,7 +1,6 @@
 #lang racket
-(require "drive_21151665_IribarraBecerra.rkt" "drives_21151665_IribarraBecerra.rkt"
-         "user_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt"
-         "path_21151665_IribarraBecerra.rkt" "folder_21151665_IribarraBecerra.rkt")
+(require "drives_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt"
+         "path_21151665_IribarraBecerra.rkt" "file_21151665_IribarraBecerra.rkt")
 
 ; TDA system
 ; Representacion:
@@ -187,24 +186,37 @@
 ; Descripcion:
 
 (define cd (lambda (sys) (lambda (new_location)
-                           (if (equal? new_location "...")
-                               (system_change_path sys (path_add_location path_empty (car (system_path sys))))
+                           (if (equal? new_location "..")
+                               (system_change_path sys (path_drive (system_path sys)))
                                (if (equal? new_location "/")
                                    (system_change_path sys (path_previous_location (system_path sys)))
-                                   (if (path_string_single_location? new_location)
+                                   (if (char? (car (path_string_to_path new_location)))
                                        (system_change_path sys
-                                        (path_add_location (list (car (system_path sys))) new_location))
+                                        (path_string_to_path new_location))
                                        (system_change_path sys
-                                        (path_add_location (list (car (system_path sys))) (path_string_to_path new_location))))
-                            )))))
+                                        (path_add_location (system_path sys) (path_string_to_path new_location))
+                            )))))))
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 
 ; Descripcion:
-; FALTA VERIFICAR SI LA LOCACION EXISTE ANTES DE CAMBIAR Y ARREGLAR ERROR AL ENTREGAR PATH ENTERO
+
+(define add-file (lambda (sys) (lambda (new_file)
+                                    (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_add_file (system_drives sys) (car (system_path sys)) new_file (system_path sys))
+                                          (system_users sys)
+                                          (system_path sys)
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                                    )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Otras Funciones ----;
 
-(define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) "c" "Drive01" 123456789) add-drive) "d" "DriveFunky" 987654321) add-drive) "e" "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))
-(define S1 ((run ((run S0 login) "Fernando Iribarra") switch-drive) "c"))
+(define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) #\C "Drive01" 123456789) add-drive) #\D "DriveFunky" 987654321) add-drive) #\E "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))
+(define S1 ((run ((run S0 login) "Fernando Iribarra") switch-drive) #\C))
 (define S2 ((run ((run ((run S1 md) "Folder01") md) "fulder") md) "dalder"))

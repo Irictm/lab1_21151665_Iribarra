@@ -1,5 +1,5 @@
 #lang racket
-(provide folder folder_name folder_inside folder_creation_date folder_last_mod_date folder_empty folder_empty? folder_add_folder)
+(provide folder folder_name folder_inside folder_creation_date folder_last_mod_date folder_empty folder_empty? folder_add_folder folder_add_file)
 (require "generic-functions_21151665_IribarraBecerra.rkt")
 
 ; TDA folder
@@ -86,5 +86,21 @@
 ; Descripcion: Funcion que recibe un folder, un nombre, un path y retorna un
 ;              folder con un folder creado dentro de este con el nombre indicado, en el path indicado.
 ; Recursion: natural
+
+(define folder_add_file (lambda (fldr new_file path)
+                           (if (null? (cdr path))
+                               (add_not_duped_value fldr new_file folder_empty? folder_empty)
+                               (if (equal? (caar fldr) (cadr path))
+                                   (cons (recreate_folder
+                                          (folder_name (car fldr))
+                                          (folder_add_file (folder_inside (car fldr)) new_file (cdr path))
+                                          (folder_creation_date (car fldr))
+                                          "Fecha new mod (placeholder)") (cdr fldr))
+                                   (cons (car fldr) (folder_add_file (cdr fldr) new_file path))
+                           ))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Otras Funciones ----;

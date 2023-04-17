@@ -1,5 +1,5 @@
 #lang racket
-(provide drives_empty drives_add_drive drives_empty? drives_exists_drive? drives_drive_add_folder)
+(provide drives_empty drives_add_drive drives_empty? drives_exists_drive? drives_drive_add_folder drives_drive_add_file)
 (require "drive_21151665_IribarraBecerra.rkt" "generic-functions_21151665_IribarraBecerra.rkt")
 
 ; TDA drives
@@ -64,5 +64,17 @@
 ;              un path y retorna la lista de drives con un folder creado con el nombre indicado
 ;              agregado al drive representado por la letra indicada, en el path indicado.
 ; Recursion: natural
+
+(define drives_drive_add_file (lambda (drives_list drv_letter new_file path)
+                                  (if (drives_empty? drives_list)
+                                      (drives_list)
+                                      (if (equal? (caar drives_list) drv_letter)
+                                          (cons (drive_add_file (car drives_list) new_file path) (cdr drives_list))
+                                          (cons (car drives_list) (drives_drive_add_file (cdr drives_list) drv_letter new_file path)
+                                  )))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Otras Funciones ----;

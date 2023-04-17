@@ -1,5 +1,5 @@
 #lang racket
-(provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder)
+(provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder drive_add_file)
 (require "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA drive
@@ -61,5 +61,17 @@
 ; Recorrido: drive
 ; Descripcion: Funcion que recibe un drive, un nombre y un path, y retorna el drive
 ;              con un folder (con el nombre indicado) agregado en la posicion indicada por el path.
+
+(define drive_add_file (lambda (drv new_file path)
+                           (drive
+                            (drive_letter drv)
+                            (drive_name drv)
+                            (drive_capacity drv)
+                            (folder_add_file (drive_root drv) new_file path)
+                           )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Otras Funciones ----;

@@ -1,5 +1,5 @@
 #lang racket
-(provide path_empty path_empty? path_add_location path_string_to_path path_string_single_location? path_previous_location)
+(provide path_empty path_empty? path_add_location path_string_to_path path_drive path_previous_location)
 (require "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA path
@@ -21,7 +21,9 @@
 ; Descripcion: Funcion que recibe un path y una ubicacion, y retorna el path con la nueva ubicacion agragada
 
 (define path_string_to_path (lambda (path_as_string)
-                              (string-split path_as_string "/")
+                              (if (equal? (string(string-ref path_as_string 0)) (car(string-split path_as_string "/")))
+                                  (cons (string-ref path_as_string 0) (cdr (string-split path_as_string "/")))
+                                  (string-split path_as_string "/"))
                               ))
 ; Nombre: 
 ; Dominio: 
@@ -30,17 +32,15 @@
 
 ;---- Selectores ----;
 
-;---- Pertenencia ----;
-
-(define path_empty? null?)
+(define path_drive (lambda (path) (list (car path))))
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 
 ; Descripcion:
 
-(define path_string_single_location? (lambda (path_as_string)
-                                       (null? (cdr (string-split path_as_string "/")))
-                                       ))
+;---- Pertenencia ----;
+
+(define path_empty? null?)
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 
