@@ -1,5 +1,5 @@
 #lang racket
-(provide path_empty path_empty? path_add_location path_string_to_path path_drive path_previous_location)
+(provide path_empty path_empty? path_add_location path_string_to_path path_drive path_previous_location path_del_location)
 (require "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA path
@@ -21,7 +21,7 @@
 ; Descripcion: Funcion que recibe un path y una ubicacion, y retorna el path con la nueva ubicacion agragada
 
 (define path_string_to_path (lambda (path_as_string)
-                              (if (equal? (string(string-ref path_as_string 0)) (car(string-split path_as_string "/")))
+                              (if (equal? (string(string-ref path_as_string 0)) (string-trim (car(string-split path_as_string "/")) ":"))
                                   (cons (string-ref path_as_string 0) (cdr (string-split path_as_string "/")))
                                   (string-split path_as_string "/"))
                               ))
@@ -62,9 +62,20 @@
 ;---- Modificadores ----;
 
 (define path_previous_location (lambda (path)
-                                 (if (null? (cdr path)) null
-                                     (cons (car path) (path_previous_location (cdr path)))
+                                 (if (and (char? (car path)) (path_empty? (cdr path))) path
+                                     (if (path_empty? (cdr path)) null
+                                         (cons (car path) (path_previous_location (cdr path))))
                                  )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define path_del_location (lambda (path name_location)
+                            (if (path_empty? path) null
+                                (if (equal? (car path) name_location) null
+                                    (cons (car path) (path_del_location (cdr path) name_location))
+                            ))))
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 

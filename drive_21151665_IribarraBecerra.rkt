@@ -1,6 +1,6 @@
 #lang racket
-(provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder drive_add_file)
-(require "folder_21151665_IribarraBecerra.rkt")
+(provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder_or_file drive_del drive_rd drive_get_folder_or_file drive_copy)
+(require "folder_21151665_IribarraBecerra.rkt" "path_21151665_IribarraBecerra.rkt")
 
 ; TDA drive
 ; Representacion:
@@ -43,31 +43,59 @@
 ; Recorrido: list
 ; Descripcion: Funcion que recibe un drive y entrega su folder base (root).
 
+(define drive_get_folder_or_file (lambda (drv name)
+                                  (folder_get_folder_or_file (drive_root drv) name)))
+
 
 ;---- Pertenencia ----;
 
 
 ;---- Modificadores ----;
 
-(define drive_add_folder (lambda (drv name path)
-                           (drive
-                            (drive_letter drv)
-                            (drive_name drv)
-                            (drive_capacity drv)
-                            (folder_add_folder (drive_root drv) name path)
-                           )))
+(define drive_add_folder_or_file (lambda (drv object path)
+                                   (drive
+                                    (drive_letter drv)
+                                    (drive_name drv)
+                                    (drive_capacity drv)
+                                    (folder_add_folder_or_file (drive_root drv) object path)
+                                    )))
 ; Nombre: drive_add_folder
-; Dominio: drv(drive) X name(string) X path(path)
+; Dominio: drv(drive) X object(folder or file) X path(path)
 ; Recorrido: drive
-; Descripcion: Funcion que recibe un drive, un nombre y un path, y retorna el drive
-;              con un folder (con el nombre indicado) agregado en la posicion indicada por el path.
+; Descripcion: Funcion que recibe un drive, un folder o file y un path, y retorna el drive
+;              con un folder o file agregado en la posicion indicada por el path.
 
-(define drive_add_file (lambda (drv new_file path)
+
+(define drive_del (lambda (drv name)
                            (drive
                             (drive_letter drv)
                             (drive_name drv)
                             (drive_capacity drv)
-                            (folder_add_file (drive_root drv) new_file path)
+                            (folder_del (drive_root drv) name)
+                           )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drive_rd (lambda (drv path)
+                           (drive
+                            (drive_letter drv)
+                            (drive_name drv)
+                            (drive_capacity drv)
+                            (folder_remove_dir (drive_root drv) path)
+                           )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drive_copy (lambda (drv object path)
+                           (drive
+                            (drive_letter drv)
+                            (drive_name drv)
+                            (drive_capacity drv)
+                            (folder_add_folder_or_file (drive_root drv) object path)
                            )))
 ; Nombre: 
 ; Dominio: 

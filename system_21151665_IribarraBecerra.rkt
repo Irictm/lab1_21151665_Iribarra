@@ -1,6 +1,7 @@
 #lang racket
 (require "drives_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt"
-         "path_21151665_IribarraBecerra.rkt" "file_21151665_IribarraBecerra.rkt")
+         "path_21151665_IribarraBecerra.rkt" "file_21151665_IribarraBecerra.rkt"
+         "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA system
 ; Representacion:
@@ -174,7 +175,7 @@
 (define md (lambda (sys) (lambda (name)
                            (system_recreate
                                           (system_name sys)
-                                          (drives_drive_add_folder (system_drives sys) (car (system_path sys)) name (system_path sys))
+                                          (drives_drive_add_folder_or_file (system_drives sys) (car (system_path sys)) (folder name) (system_path sys))
                                           (system_users sys)
                                           (path_add_location (system_path sys) (cons name null))
                                           (system_active_user sys)
@@ -204,7 +205,7 @@
 (define add-file (lambda (sys) (lambda (new_file)
                                     (system_recreate
                                           (system_name sys)
-                                          (drives_drive_add_file (system_drives sys) (car (system_path sys)) new_file (system_path sys))
+                                          (drives_drive_add_folder_or_file (system_drives sys) (car (system_path sys)) new_file (system_path sys))
                                           (system_users sys)
                                           (system_path sys)
                                           (system_active_user sys)
@@ -215,8 +216,68 @@
 ; Recorrido: 
 ; Descripcion:
 
+(define del (lambda (sys) (lambda (name)
+                           (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_del (system_drives sys) name)
+                                          (system_users sys)
+                                          (path_del_location (system_path sys) name)
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                           )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define rd (lambda (sys) (lambda (name_or_path)
+                           (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_rd (system_drives sys) name_or_path)
+                                          (system_users sys)
+                                          (path_previous_location (system_path sys))
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                           )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+; EL PATH VUELVE A LA LOCACION ANTERIOR INDEPENDIENTE DEL RESULTADO
+
+
+(define copy (lambda (sys) (lambda (name path)
+                             (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_copy (system_drives sys) (car (path_string_to_path path)) name (path_string_to_path path))
+                                          (system_users sys)
+                                          (system_path sys)
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                             )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define move (lambda (sys) (lambda (name path)
+                             (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_move (system_drives sys) (car (path_string_to_path path)) name (path_string_to_path path))
+                                          (system_users sys)
+                                          (system_path sys)
+                                          (system_active_user sys)
+                                          (system_creation_date sys))
+                             )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
 ;---- Otras Funciones ----;
 
 (define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) #\C "Drive01" 123456789) add-drive) #\D "DriveFunky" 987654321) add-drive) #\E "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))
 (define S1 ((run ((run S0 login) "Fernando Iribarra") switch-drive) #\C))
-(define S2 ((run ((run ((run S1 md) "Folder01") md) "fulder") md) "dalder"))
+(define S2 ((run ((run ((run S1 md) "Folder01") md) "Folder02") md) "Folder03"))
+(define S3 ((run ((run ((run ((run S2 cd) "C/Folder01") md) "folder_new") add-file) (file "stuff.txt" "txt" "a lot of stuff")) add-file) (file "notes.txt" "txt" "notes, notes and more notes..")))
+(define S4 ((run ((run ((run ((run ((run ((run S3 switch-drive) #\D) md) "BIG-FOLDER") cd) "..") md) "SMALL-FOLDER") cd) "..") add-file) (file "MISTERY-STUFF.txt" "txt" "?????")))

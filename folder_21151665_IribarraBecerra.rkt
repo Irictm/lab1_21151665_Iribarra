@@ -1,5 +1,5 @@
 #lang racket
-(provide folder folder_name folder_inside folder_creation_date folder_last_mod_date folder_empty folder_empty? folder_add_folder folder_add_file)
+(provide folder folder_name folder_inside folder_creation_date folder_last_mod_date folder_empty folder_empty? folder_add_folder_or_file folder_del folder_remove_dir folder_get_folder_or_file)
 (require "generic-functions_21151665_IribarraBecerra.rkt")
 
 ; TDA folder
@@ -58,6 +58,20 @@
 ; Recorrido: date
 ; Descripcion: Funcion que recibe un folder y retorna su fecha de ultima modificacion.
 
+(define folder_get_folder_or_file (lambda (fldr name)
+                     (if (folder_empty? fldr) folder_empty
+                         (if (equal? (caar fldr) name)
+                             (car fldr)
+                             (if (list? (cadr (car fldr)))
+                                 (if (folder_empty? (folder_inside (car fldr)))
+                                     (folder_get_folder_or_file (cdr fldr) name)
+                                     (folder_get_folder_or_file (folder_inside (car fldr)) name))
+                                 (folder_get_folder_or_file (cdr fldr) name)))
+                             )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 ;---- Pertenencia ----;
 
@@ -69,35 +83,63 @@
 
 ;---- Modificadores ----;
 
-(define folder_add_folder (lambda (fldr name path)
-                           (if (null? (cdr path))
-                               (add_not_duped_value fldr (folder name) folder_empty? folder_empty)
-                               (if (equal? (caar fldr) (cadr path))
-                                   (cons (recreate_folder
-                                          (folder_name (car fldr))
-                                          (folder_add_folder (folder_inside (car fldr)) name (cdr path))
-                                          (folder_creation_date (car fldr))
-                                          "Fecha new mod (placeholder)") (cdr fldr))
-                                   (cons (car fldr) (folder_add_folder (cdr fldr) name path))
-                           ))))
-; Nombre: folder_add_folder
-; Dominio: fldr(folder) X name(string) X path(path)
+(define folder_add_folder_or_file (lambda (fldr new_object path)
+                                    (if (folder_empty? (cdr path))
+                                        (add_not_duped_value fldr new_object folder_empty? folder_empty)
+                                        (if (equal? (caar fldr) (cadr path))
+                                            (cons (recreate_folder
+                                                   (folder_name (car fldr))
+                                                   (folder_add_folder_or_file (folder_inside (car fldr)) new_object (cdr path))
+                                                   (folder_creation_date (car fldr))
+                                                   "Fecha new mod (placeholder)") (cdr fldr))
+                                            (cons (car fldr) (folder_add_folder_or_file (cdr fldr) new_object path))
+                                            ))))
+; Nombre: folder_add_folder_or_file
+; Dominio: fldr(folder) X new_object(folder or file) X path(path)
 ; Recorrido: folder
-; Descripcion: Funcion que recibe un folder, un nombre, un path y retorna un
-;              folder con un folder creado dentro de este con el nombre indicado, en el path indicado.
+; Descripcion: Funcion que recibe un folder, un file o folder, un path y retorna un
+;              folder con un file o folder creado dentro de este, en el path indicado.
 ; Recursion: natural
 
-(define folder_add_file (lambda (fldr new_file path)
-                           (if (null? (cdr path))
-                               (add_not_duped_value fldr new_file folder_empty? folder_empty)
-                               (if (equal? (caar fldr) (cadr path))
-                                   (cons (recreate_folder
-                                          (folder_name (car fldr))
-                                          (folder_add_file (folder_inside (car fldr)) new_file (cdr path))
-                                          (folder_creation_date (car fldr))
-                                          "Fecha new mod (placeholder)") (cdr fldr))
-                                   (cons (car fldr) (folder_add_file (cdr fldr) new_file path))
-                           ))))
+(define folder_del (lambda (fldr name)
+                     (if (folder_empty? fldr) folder_empty
+                         (if (equal? (caar fldr) name)
+                             (folder_del (cdr fldr) name)
+                             (if (list? (cadr (car fldr)))
+                                 (cons (recreate_folder
+                                      (folder_name (car fldr))
+                                      (folder_del (folder_inside (car fldr)) name)
+                                      (folder_creation_date (car fldr))
+                                      "Fecha new mod (placeholder)") (folder_del (cdr fldr) name))
+                                 (cons (car fldr) (folder_del (cdr fldr) name))))
+                             )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define folder_remove_dir (lambda (fldr path)
+                     (if (folder_empty? fldr) folder_empty
+                         (if (equal? (caar fldr) (car path))
+                             (if (null? (cdr path))
+                                 (if (folder_empty? (folder_inside (car fldr)))
+                                     (cdr fldr)
+                                     fldr)
+                                 (if (list? (cadr (car fldr)))
+                                     (cons (recreate_folder
+                                            (folder_name (car fldr))
+                                            (folder_remove_dir (folder_inside (car fldr)) (cdr path))
+                                            (folder_creation_date (car fldr))
+                                            "Fecha new mod (placeholder)") (folder_remove_dir (cdr fldr) path))
+                                     (cons (car fldr) (folder_remove_dir (cdr fldr) path))))
+                             (if (list? (cadr (car fldr)))
+                                     (cons (recreate_folder
+                                            (folder_name (car fldr))
+                                            (folder_remove_dir (folder_inside (car fldr)) path)
+                                            (folder_creation_date (car fldr))
+                                            "Fecha new mod (placeholder)") (folder_remove_dir (cdr fldr) path))
+                                     (cons (car fldr) (folder_remove_dir (cdr fldr) path))))
+                             )))
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 
