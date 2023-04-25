@@ -1,5 +1,6 @@
 #lang racket
-(provide drives_empty drives_add_drive drives_empty? drives_exists_drive? drives_drive_add_folder_or_file drives_drive_del drives_drive_rd drives_drive_copy drives_drive_move)
+(provide drives_empty drives_add_drive drives_empty? drives_exists_drive? drives_drive_add_folder_or_file drives_drive_del drives_drive_rd drives_drive_copy
+         drives_drive_move drives_get_folder_in_path drives_drive_rename drives_drive_format)
 (require "drive_21151665_IribarraBecerra.rkt" "path_21151665_IribarraBecerra.rkt" "generic-functions_21151665_IribarraBecerra.rkt")
 
 ; TDA drives
@@ -30,6 +31,17 @@
                                         (if (null? (drive_get_folder_or_file (car drives_list) name))
                                             (drives_get_folder_or_file (cdr drives_list) name)
                                             (drive_get_folder_or_file (car drives_list) name)))
+                                    ))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drives_get_folder_in_path (lambda (drives_list path)
+                                    (if (drives_empty? drives_list) drives_list
+                                        (if (equal? (drive_letter (car drives_list)) (car path))
+                                            (drive_get_folder_in_path (car drives_list) path)
+                                            (drives_get_folder_in_path (cdr drives_list) path)))
                                     ))
 ; Nombre: 
 ; Dominio: 
@@ -108,6 +120,28 @@
 
 (define drives_drive_move (lambda (drives_list drv_letter name path)
                             (drives_drive_add_folder_or_file (drives_drive_del drives_list name) drv_letter (drives_get_folder_or_file drives_list name) path)))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drives_drive_rename (lambda (drives_list name new_name path)
+                              (if (drives_empty? drives_list) drives_list
+                                  (if (equal? (caar drives_list) (car path))
+                                      (cons (drive_rename (car drives_list) name new_name path) (cdr drives_list))
+                                      (cons (car drives_list) (drives_drive_rename (cdr drives_list) name new_name path)
+                                            )))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drives_drive_format (lambda (drives_list letter new_name)
+                              (if (drives_empty? drives_list) drives_list
+                                  (if (equal? (caar drives_list) letter)
+                                      (cons (drive_format (car drives_list) new_name) (cdr drives_list))
+                                      (cons (car drives_list) (drives_drive_format (cdr drives_list) letter new_name)
+                                            )))))
 ; Nombre: 
 ; Dominio: 
 ; Recorrido: 

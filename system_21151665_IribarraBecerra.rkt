@@ -274,6 +274,39 @@
 ; Recorrido: 
 ; Descripcion:
 
+(define rename (lambda (sys) (lambda (name new_name)
+                               (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_rename (system_drives sys) name new_name (system_path sys))
+                                          (system_users sys)
+                                          (system_path sys)
+                                          (system_active_user sys)
+                                          (system_creation_date sys)))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define dir (lambda (sys) (lambda ([param1 ""])
+                            (dir_base (drives_get_folder_in_path (system_drives sys) (system_path sys))))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define format (lambda (sys) (lambda (letter new_name)
+                               (system_recreate
+                                          (system_name sys)
+                                          (drives_drive_format (system_drives sys) letter new_name)
+                                          (system_users sys)
+                                          (system_path sys)
+                                          (system_active_user sys)
+                                          (system_creation_date sys)))))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
 ;---- Otras Funciones ----;
 
 (define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) #\C "Drive01" 123456789) add-drive) #\D "DriveFunky" 987654321) add-drive) #\E "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))

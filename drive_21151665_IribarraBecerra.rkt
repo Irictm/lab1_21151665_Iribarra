@@ -1,5 +1,6 @@
 #lang racket
-(provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder_or_file drive_del drive_rd drive_get_folder_or_file drive_copy)
+(provide drive drive_letter drive_name drive_capacity drive_root drive_add_folder_or_file drive_del drive_rd drive_get_folder_or_file drive_copy
+         drive_get_folder_in_path drive_rename drive_format)
 (require "folder_21151665_IribarraBecerra.rkt" "path_21151665_IribarraBecerra.rkt")
 
 ; TDA drive
@@ -45,6 +46,18 @@
 
 (define drive_get_folder_or_file (lambda (drv name)
                                   (folder_get_folder_or_file (drive_root drv) name)))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drive_get_folder_in_path (lambda (drv path)
+                                    (folder_get_folder_in_path (drive_root drv) (cdr path))
+                                    ))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
 
 
 ;---- Pertenencia ----;
@@ -101,5 +114,25 @@
 ; Dominio: 
 ; Recorrido: 
 ; Descripcion:
+
+(define drive_rename (lambda (drv name new_name path)
+                       (drive
+                        (drive_letter drv)
+                        (drive_name drv)
+                        (drive_capacity drv)
+                        (folder_rename (drive_root drv) name new_name path)
+                        )))
+; Nombre: 
+; Dominio: 
+; Recorrido: 
+; Descripcion:
+
+(define drive_format (lambda (drv new_name)
+                       (drive
+                        (drive_letter drv)
+                        new_name
+                        (drive_capacity drv)
+                        null
+                        )))
 
 ;---- Otras Funciones ----;
