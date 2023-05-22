@@ -1,33 +1,95 @@
 #lang racket
 (require "drives_21151665_IribarraBecerra.rkt" "users_21151665_IribarraBecerra.rkt"
          "path_21151665_IribarraBecerra.rkt" "file_21151665_IribarraBecerra.rkt"
-         "folder_21151665_IribarraBecerra.rkt")
+         "folder_21151665_IribarraBecerra.rkt" "date_21151665_IribarraBecerra.rkt")
+(provide system run add-drive register login logout switch-drive md cd add-file del rd
+         copy move ren dir format encrypt decrypt plus-one minus-one)
 
 ; TDA system
-; Representacion:
+; Representacion: Representado por una lista que contiene el nombre del sistema(string),
+;                 una lista de drives(drives), una lista de usuarios(users), un path actual(path),
+;                 el usuario activo actual(string), fecha de creacion(string) y fecha de ultima modificacion(string).
 
 
 ;---- Constructores ----;
 
 (define system (lambda (sys_name)
-                 (list sys_name drives_empty users_empty path_empty "" "Fecha (placeholder)")))
+                 (list sys_name drives_empty users_empty path_empty "" current_date current_date)
+                 ))
 ; Nombre: system
 ; Dominio: sys_name(string)
 ; Recorrido: system (list)
-; Descripcion: Funcion constructora del systema, recibe un string y entrega
-;              una lista construida a traves de pares que contiene el nombre del systema,
-;              una lista de drives vacia, una lista de usuarios vacia, el path actual
+; Descripcion: Funcion constructora del systema, recibe un nombre y entrega
+;              una lista que contiene el nombre del systema, una lista
+;              de drives vacia, una lista de usuarios vacia, el path actual
 ;              representado por una lista vacia, un string indicando que no existe
-;              usuario actual y la fecha de creacion.
-; FALTA DEJAR REGISTRO DE FECHA;
+;              usuario actual, la fecha de creacion y la fecha de ultima modificacion.
 
-(define system_recreate (lambda (sys_name sys_drive sys_users sys_path sys_act_user sys_date)
-                          (list sys_name sys_drive sys_users sys_path sys_act_user sys_date)
+(define system_recreate (lambda (sys_name sys_drive sys_users sys_path sys_act_user sys_create_date sys_last_mod_date)
+                          (list sys_name sys_drive sys_users sys_path sys_act_user sys_create_date sys_last_mod_date)
                           ))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: system_recreate
+; Dominio: sys_name(string) X sys_drive(list) X sys_users(list) X sys_path(list) X sys_act_user X sys_create_date(string) X sys_last_mod_date(srting)
+; Recorrido: system(list)
+; Descripcion: Funcion constructora de system, recibe los atributos anteriormente mencionados y retorna un sistema con estos.
+
+;---- Selectores ----;
+
+(define system_name car)
+; Nombre: system_name
+; Dominio: system
+; Recorrido: string
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su nombre.
+
+(define system_drives cadr)
+; Nombre: system_drives
+; Dominio: system
+; Recorrido: drives
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su lista de drives.
+
+(define system_users caddr)
+; Nombre: system_users
+; Dominio: system
+; Recorrido: users
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su lista de usuarios.
+
+(define system_path cadddr)
+; Nombre: system_path
+; Dominio: system
+; Recorrido: path
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su path.
+
+(define system_active_user (lambda (sys) (list-ref sys 4)))
+; Nombre: system_active_user
+; Dominio: system
+; Recorrido: string
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su usuario activo (logeado).
+
+(define system_creation_date (lambda (sys) (list-ref sys 5)))
+; Nombre: system_creation_date
+; Dominio: system
+; Recorrido: string
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su fecha de creacion.
+
+(define system_last_mod_date (lambda (sys) (list-ref sys 6)))
+; Nombre: system_last_mod_date
+; Dominio: system
+; Recorrido: string
+; Descripcion: Funcion selectora de system, recibe un sistema y retorna su fecha de ultima modificacion.
+
+
+;---- Pertenencia ----;
+
+(define system_user_logged? (lambda (sys)
+                              (if (equal? (system_active_user sys) "") false true)
+                              ))
+; Nombre: system_user_logged?
+; Dominio: system
+; Recorrido: bool
+; Descripcion: Funcion de pertenencia de sistem que retorna #t si el sistema
+;              entregado tiene un usuario logeado o #f caso contrario.
+
+;---- Modificadores ----;
 
 (define system_change_path (lambda (sys path_list)
                              (system_recreate
@@ -37,84 +99,35 @@
                                       path_list
                                      (system_active_user sys)
                                      (system_creation_date sys)
+                                     current_date
                                      )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-;---- Selectores ----;
-
-(define system_name car)
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-(define system_drives cadr)
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-(define system_users caddr)
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-(define system_path cadddr)
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-(define system_active_user (lambda (sys) (list-ref sys 4)))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-(define system_creation_date (lambda (sys) (list-ref sys 5)))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-
-;---- Pertenencia ----;
-
-(define system_user_logged? (lambda (sys)
-                              (if (equal? (system_active_user sys) "") false true)
-                              ))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-
-;---- Modificadores ----;
-
-(define run (lambda (systema comando) (comando systema)))
-; Nombre: run
-; Dominio: system X comando(funcion)
+; Nombre: system_change_path
+; Dominio: sys(system) X path_list(path)
 ; Recorrido: system
-; Descripcion: Funcion modificadora de system, recibe un systema y una funcion para
-;              retornar el systema con la funcion aplicada a traves del uso de "compose")
-; FALTA DEJAR REGISTRO DE FECHA;
+; Descripcion: Funcion modificadora de system que recibe un sistema, un path
+;              y retorna el sistema con su path cambiado por el entregado.
+
+(define run (lambda (sys comando) (comando sys)))
+; Nombre: run
+; Dominio: sys(system) X comando(procedure)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un comando y
+;              retorna el resultado de evaluar el systema en el comando.
 
 (define add-drive (lambda (sys) (lambda (letter name capacity)
                                     (system_recreate
                                      (system_name sys)
-                                     (drives_add_drive (system_drives sys) letter name capacity)
+                                     (drives_add_drive (system_drives sys) (char-upcase letter) (string-downcase name) capacity)
                                      (system_users sys)
                                      (system_path sys)
                                      (system_active_user sys)
-                                     (system_creation_date sys))
+                                     (system_creation_date sys)
+                                     current_date)
                                     )))
 ; Nombre: add-drive
-; Dominio: system X letra (char) X nombre (String) X capacidad (int)
+; Dominio: sys(system) X letra (char) X nombre (String) X capacidad (int)
 ; Recorrido: system
-; Descripcion: Funcion modificadora de system, recibe un systema, una letra, un nombre
+; Descripcion: Funcion modificadora de system, recibe un sistema, una letra, un nombre
 ;              y una capacidad para crear un drive con estas especificaciones y lo agrega
 ;              al sistema (el cual retorna).
 
@@ -122,32 +135,35 @@
                                    (system_recreate
                                      (system_name sys)
                                      (system_drives sys)
-                                     (add_user (system_users sys) name)
+                                     (users_add_user (system_users sys) (string-downcase name))
                                      (system_path sys)
                                      (system_active_user sys)
-                                     (system_creation_date sys))
+                                     (system_creation_date sys)
+                                     current_date)
                                    )))
 ; Nombre: register
-; Dominio: nombre_usuario(string)
+; Dominio: sys(system) X name(string)
 ; Recorrido: system
-; Descripcion: Funcion modificadora de system, recibe un systema y un nombre de usuario
+; Descripcion: Funcion modificadora de system, recibe un sistema y un nombre de usuario
 ;              para crear un usuario con estas especificaciones y lo agrega al sistema (el cual retorna).
 
 (define login (lambda (sys) (lambda (u_name)
-                              (if (users_exists_user? (system_users sys) u_name)
+                              (if (and (not (system_user_logged? sys)) (users_exists_user? (system_users sys) (string-downcase u_name)))
                                   (system_recreate
                                      (system_name sys)
                                      (system_drives sys)
                                      (system_users sys)
                                      (system_path sys)
-                                     u_name
-                                     (system_creation_date sys))
+                                     (string-downcase u_name)
+                                     (system_creation_date sys)
+                                     current_date)
                                   sys
                               ))))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: login
+; Dominio: sys(system) X u_name(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre de usuario y
+;              retorna el systema con el usuario logeado como usuario activo (solo si este esta registrado).
 
 (define logout (lambda (sys) (system_recreate
                                      (system_name sys)
@@ -155,52 +171,61 @@
                                      (system_users sys)
                                      (system_path sys)
                                      ""
-                                     (system_creation_date sys)    
+                                     (system_creation_date sys)
+                                     current_date
                               )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: logout
+; Dominio: sys(system)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema y retorna el sistema sin usuario activo.
 
 (define switch-drive (lambda (sys) (lambda (letter)
-                                     (if (and (system_user_logged? sys) (drives_exists_drive? (system_drives sys) letter))
+                                     (if (and (system_user_logged? sys) (drives_exists_drive? (system_drives sys) (char-upcase letter)))
                                          (system_change_path sys (cons letter path_empty))
                                          sys
                                      ))))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: switch-drive
+; Dominio: sys(system) X letter(char)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, una letra que representa un drive y retorna el sistema con
+;              la letra agregada al path de este (solo si existe un user logeado y el drive existe en el sistema).
 
 (define md (lambda (sys) (lambda (name)
                            (system_recreate
                                           (system_name sys)
-                                          (drives_drive_add_folder_or_file (system_drives sys) (car (system_path sys)) (folder name) (system_path sys))
+                                          (drives_drive_add_folder_or_file (system_drives sys) (car (system_path sys)) (folder (string-downcase name) (system_active_user sys)) (system_path sys))
                                           (system_users sys)
-                                          (path_add_location (system_path sys) (cons name null))
+                                          (system_path sys)
                                           (system_active_user sys)
-                                          (system_creation_date sys))
+                                          (system_creation_date sys)
+                                          current_date)
                            )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: md
+; Dominio: sys(system) X name(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre, y retorna el sistema con
+;              un folder creado en el path actual de este.
 
 (define cd (lambda (sys) (lambda (new_location)
-                           (if (equal? new_location "..")
-                               (system_change_path sys (path_drive (system_path sys)))
-                               (if (equal? new_location "/")
+                           (if (equal? new_location "/")
+                               (system_change_path sys (path_first_location_listed (system_path sys)))
+                               (if (equal? new_location "..")
                                    (system_change_path sys (path_previous_location (system_path sys)))
                                    (if (char? (car (path_string_to_path new_location)))
-                                       (system_change_path sys
-                                        (path_string_to_path new_location))
-                                       (system_change_path sys
-                                        (path_add_location (system_path sys) (path_string_to_path new_location))
-                            )))))))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+                                       (if (not (folder_empty? (drives_get_folder_in_path (system_drives sys) (path_string_to_path new_location))))
+                                           (system_change_path sys (path_string_to_path new_location))
+                                           (system_change_path sys (system_path sys)))
+                                       (if (not (folder_empty? (drives_get_folder_in_path (system_drives sys) (path_add_location (system_path sys) (path_string_to_path new_location)))))
+                                           (system_change_path sys (path_add_location (system_path sys) (path_string_to_path new_location)))
+                                           (system_change_path sys (system_path sys)))
+                            ))))))
+; Nombre: cd
+; Dominio: sys(system) X new_location(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, una nueva locacion (string formateado) y retorna
+;              el sistema con el path modificado acorde a la nueva locacion entregada. El path volvera a su raiz si
+;              la nueva locacion es "/", volvera a la locacion anterior si la nueva locacion es ".." o cambiara a la
+;              locacion indicada por el string si este esta formateado como un path (locaciones separadas por /).
 
 (define add-file (lambda (sys) (lambda (new_file)
                                     (system_recreate
@@ -209,108 +234,204 @@
                                           (system_users sys)
                                           (system_path sys)
                                           (system_active_user sys)
-                                          (system_creation_date sys))
+                                          (system_creation_date sys)
+                                          current_date)
                                     )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: add-file
+; Dominio: sys(system)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un file y retorna el sistema con
+;              este file agregado al folder indicado por el path actual del sistema.
 
 (define del (lambda (sys) (lambda (name)
                            (system_recreate
                                           (system_name sys)
-                                          (drives_drive_del (system_drives sys) name)
+                                          (drives_drive_del (system_drives sys) (string-downcase name) (system_path sys))
                                           (system_users sys)
-                                          (path_del_location (system_path sys) name)
+                                          (path_del_location (system_path sys) (string-downcase name))
                                           (system_active_user sys)
-                                          (system_creation_date sys))
+                                          (system_creation_date sys)
+                                          current_date)
                            )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: del
+; Dominio: sys(system)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre y retorna el sistema
+;              con el folder o file representado por el nombre entregado borrado de la locacion al final del path del sistema.
 
 (define rd (lambda (sys) (lambda (name_or_path)
                            (system_recreate
                                           (system_name sys)
-                                          (drives_drive_rd (system_drives sys) name_or_path)
+                                          (if (char? (path_string_to_path name_or_path))
+                                              (drives_drive_rd (system_drives sys) (path_string_to_path name_or_path))
+                                              (drives_drive_rd (system_drives sys) (path_add_location (system_path sys) (path_string_to_path name_or_path))))
                                           (system_users sys)
-                                          (path_previous_location (system_path sys))
+                                          (path_remove_directory (system_path sys) (drives_get_folder_in_path (system_drives sys) (path_string_to_path name_or_path)))
                                           (system_active_user sys)
-                                          (system_creation_date sys))
+                                          (system_creation_date sys)
+                                          current_date)
                            )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
-; EL PATH VUELVE A LA LOCACION ANTERIOR INDEPENDIENTE DEL RESULTADO
+; Nombre: rd
+; Dominio: sys(system) X name_or_path(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre o path(syting formateado) y retorna el sistema
+;              con el folder representado por el nombre o al final del path entregado borrado del sistema.
 
 
 (define copy (lambda (sys) (lambda (name path)
                              (system_recreate
                                           (system_name sys)
-                                          (drives_drive_copy (system_drives sys) (car (path_string_to_path path)) name (path_string_to_path path))
+                                          (drives_drive_copy (system_drives sys) (car (path_string_to_path path)) (string-downcase name) (path_string_to_path path) (system_path sys))
                                           (system_users sys)
                                           (system_path sys)
                                           (system_active_user sys)
-                                          (system_creation_date sys))
+                                          (system_creation_date sys)
+                                          current_date)
                              )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: copy
+; Dominio: sys(system) X name(string) X path(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un path (string formateado) y retorna
+;              el sistema con el folder o archivo representado por el nombre entregado copiado y esta
+;              copia agregada al path indicado.
 
 (define move (lambda (sys) (lambda (name path)
                              (system_recreate
                                           (system_name sys)
-                                          (drives_drive_move (system_drives sys) (car (path_string_to_path path)) name (path_string_to_path path))
+                                          (if (folder_empty? (drives_get_folder_or_file_in_path (system_drives sys) (string-downcase name) (path_string_to_path path)))
+                                           (drives_drive_move (system_drives sys) (car (path_string_to_path path)) (string-downcase name) (path_string_to_path path) (system_path sys))
+                                           (system_drives sys))
                                           (system_users sys)
                                           (system_path sys)
                                           (system_active_user sys)
-                                          (system_creation_date sys))
+                                          (system_creation_date sys)
+                                          current_date)
                              )))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+; Nombre: move
+; Dominio: sys(system) X name(string) X path(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre, un path(string formateado) y
+;              retorna el sistema con el folder o file representado por el nombre indicado reposicionado al path entregado.
 
-(define rename (lambda (sys) (lambda (name new_name)
+(define ren (lambda (sys) (lambda (name new_name)
                                (system_recreate
                                           (system_name sys)
-                                          (drives_drive_rename (system_drives sys) name new_name (system_path sys))
+                                          (if (null? (drives_get_folder_or_file_in_path (system_drives sys) (string-downcase new_name) (system_path sys)))
+                                              (drives_drive_rename (system_drives sys) (string-downcase name) (string-downcase new_name) (system_path sys))
+                                              (system_drives sys))
                                           (system_users sys)
                                           (system_path sys)
                                           (system_active_user sys)
-                                          (system_creation_date sys)))))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+                                          (system_creation_date sys)
+                                          current_date)
+                               )))
+; Nombre: ren
+; Dominio: sys(system) X name(string) X new_name(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre, un nuevo nombre y retorna
+;              el sistema con el folder o archivo representado por el nombre entregado renombrado con el nuevo nombre entregado.
 
-(define dir (lambda (sys) (lambda ([param1 ""])
-                            (dir_base (drives_get_folder_in_path (system_drives sys) (system_path sys))))))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+(define dir (lambda (sys) (lambda ([param1 ""] [param2 ""])
+                            (if (equal? param1 "/s")
+                                (if (equal? param2 "/a")
+                                    (dir_subdir_and_occult (if (folder_inside? (drives_get_folder_in_path (system_drives sys) (system_path sys)))
+                                                               (drives_get_folder_in_path (system_drives sys) (system_path sys))
+                                                               (folder_inside (drives_get_folder_in_path (system_drives sys) (system_path sys)))) "")
+                                    (dir_subdir (if (folder_inside? (drives_get_folder_in_path (system_drives sys) (system_path sys)))
+                                                               (drives_get_folder_in_path (system_drives sys) (system_path sys))
+                                                               (folder_inside (drives_get_folder_in_path (system_drives sys) (system_path sys)))) ""))
+                                (if (equal? param1 "/a")
+                                    (if (equal? param2 "/s")
+                                        (dir_subdir_and_occult (if (folder_inside? (drives_get_folder_in_path (system_drives sys) (system_path sys)))
+                                                               (drives_get_folder_in_path (system_drives sys) (system_path sys))
+                                                               (folder_inside (drives_get_folder_in_path (system_drives sys) (system_path sys)))) "")
+                                        (dir_base_and_occult (if (folder_inside? (drives_get_folder_in_path (system_drives sys) (system_path sys)))
+                                                               (drives_get_folder_in_path (system_drives sys) (system_path sys))
+                                                               (folder_inside (drives_get_folder_in_path (system_drives sys) (system_path sys))))))
+                                    (dir_base (if (folder_inside? (drives_get_folder_in_path (system_drives sys) (system_path sys)))
+                                                               (drives_get_folder_in_path (system_drives sys) (system_path sys))
+                                                               (folder_inside (drives_get_folder_in_path (system_drives sys) (system_path sys))))))
+                                ))))
+; Nombre: dir
+; Dominio: sys(system) X param1(string)[OPCIONAL] X param2(string)[OPCIONAL]
+; Recorrido: string
+; Descripcion: Funcion modificadora de system, recibe un sistema un parametro 1. un parametro 2 y retorna
+;              un string formateado que indica el contenido del folder al final del path actual. Si uno de los parametros
+;              es "/s" se mostraran los subfolder dentro de este. Si uno de los paramteros es "/a" se mostraran los folders
+;              o files ocultos. Se pueden entregar ambos para combinar los efectos.
 
 (define format (lambda (sys) (lambda (letter new_name)
                                (system_recreate
                                           (system_name sys)
-                                          (drives_drive_format (system_drives sys) letter new_name)
+                                          (drives_drive_format (system_drives sys) (char-upcase letter) new_name)
                                           (system_users sys)
                                           (system_path sys)
                                           (system_active_user sys)
-                                          (system_creation_date sys)))))
-; Nombre: 
-; Dominio: 
-; Recorrido: 
-; Descripcion:
+                                          (system_creation_date sys)
+                                          current_date)
+                               )))
+; Nombre: format
+; Dominio: sys(system) X letter(char) X new_name
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, una letra, un nuevo nombre y retorna el sistema
+;              con el drive representado por la letra entregada formateado (su contenido eliminado y su nombre cambiado por el nuevo entregado).
+
+(define encrypt (lambda (sys) (lambda (encryptFn decryptFn pass name_or_path)
+                                (system_recreate
+                                          (system_name sys)
+                                          (if (char? (path_string_to_path name_or_path))
+                                              (drives_drive_encrypt (system_drives sys) encryptFn decryptFn pass (path_string_to_path name_or_path))
+                                              (drives_drive_encrypt (system_drives sys) encryptFn decryptFn pass (path_add_location (system_path sys) (path_string_to_path name_or_path))))
+                                          (system_users sys)
+                                          (path_remove_directory (system_path sys) (drives_get_folder_in_path (system_drives sys) (path_string_to_path name_or_path)))
+                                          (system_active_user sys)
+                                          (system_creation_date sys)
+                                          current_date)
+                                )))
+; Nombre: encrypt
+; Dominio: sys(system) X encryptFn(procedure) X decryptFn(procedure) X pass(string) X name_or_path(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, una funcion de encriptacion, una funcion
+;              de desencriptacion, una contraseña, un nombre o path(string formateado) y retorna el sistema
+;              con el folder o file representado por el nombre o el folder al final del path entregado encriptado
+;              por la funcion de encriptacion entregada, ademas guardando la funcion de desencipracion y la contraseña
+;              dentro del metadata del folder o file.
+
+(define decrypt (lambda (sys) (lambda (pass name_or_path)
+                                (system_recreate
+                                          (system_name sys)
+                                          (if (char? (path_string_to_path name_or_path))
+                                              (drives_drive_decrypt (system_drives sys) pass (path_string_to_path name_or_path))
+                                              (drives_drive_decrypt (system_drives sys) pass (path_add_location (system_path sys) (path_string_to_path name_or_path))))
+                                          (system_users sys)
+                                          (path_remove_directory (system_path sys) (drives_get_folder_in_path (system_drives sys) (path_string_to_path name_or_path)))
+                                          (system_active_user sys)
+                                          (system_creation_date sys)
+                                          current_date)
+                                )))
+; Nombre: decrypt
+; Dominio: sys(system) X pass(string) X name_or_path(string)
+; Recorrido: system
+; Descripcion: Funcion modificadora de system, recibe un sistema, una contraseña, un nombre o path y retorna el sistema
+;              con el folder o file representado por el nombre o el folder al final del path entregado desencriptado solo
+;              si la contaseña entregada coincide con la contraseña entrega al encriptar la funcion.
+
+(define plus-one (lambda (strng)
+               (bytes->string/utf-8 (list->bytes (map (lambda (i) (+ i 1)) (bytes->list (string->bytes/utf-8 strng)))))))
+; Nombre: plus-one
+; Dominio: strng(string)
+; Recorrido: string
+; Descripcion: Funcion que recibe un string y retorna el string con cada uno de sus char cambiados por el char
+;              que viene despues numericamente en el codigo ASCII (se le suma 1 a su codigo ASCII).
+
+(define minus-one (lambda (strng)
+               (bytes->string/utf-8 (list->bytes (map (lambda (i) (- i 1)) (bytes->list (string->bytes/utf-8 strng)))))))
+; Nombre: minus-one
+; Dominio: strng(string)
+; Recorrido: string
+; Descripcion: Funcion que recibe un string y retorna el string con cada uno de sus char cambiados por el char
+;              que anterior numericamente en el codigo ASCII (se le resta 1 a su codigo ASCII).
 
 ;---- Otras Funciones ----;
 
-(define S0 ((run ((run ((run ((run ((run (system "System01") add-drive) #\C "Drive01" 123456789) add-drive) #\D "DriveFunky" 987654321) add-drive) #\E "Drove" 999999) register) "Fernando Iribarra") register) "Andrew Asprey"))
-(define S1 ((run ((run S0 login) "Fernando Iribarra") switch-drive) #\C))
-(define S2 ((run ((run ((run S1 md) "Folder01") md) "Folder02") md) "Folder03"))
-(define S3 ((run ((run ((run ((run S2 cd) "C/Folder01") md) "folder_new") add-file) (file "stuff.txt" "txt" "a lot of stuff")) add-file) (file "notes.txt" "txt" "notes, notes and more notes..")))
-(define S4 ((run ((run ((run ((run ((run ((run S3 switch-drive) #\D) md) "BIG-FOLDER") cd) "..") md) "SMALL-FOLDER") cd) "..") add-file) (file "MISTERY-STUFF.txt" "txt" "?????")))
+; FALTA SCRIPT DE PRUEBAS (AGREGAR LAS NUEVAS) ;
