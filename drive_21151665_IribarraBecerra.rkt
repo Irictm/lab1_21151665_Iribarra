@@ -4,7 +4,7 @@
 (require "folder_21151665_IribarraBecerra.rkt")
 
 ; TDA drive
-; Representacion: Representado por una lista que contiene una letra(char), un nombre(string), una
+; Representacion: Representado por una letra(char), un nombre(string), una
 ;                 capacidad(int) y una raiz(list) donde se guardaran los folder y files que este contiene.
 
 

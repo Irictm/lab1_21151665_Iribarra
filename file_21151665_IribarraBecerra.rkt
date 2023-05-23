@@ -4,7 +4,7 @@
 (require "date_21151665_IribarraBecerra.rkt")
 
 ; TDA file
-; Representacion: Representado por una lista que contiene un nombre(string), una extension(string), un contenido(string),
+; Representacion: Representado por un nombre(string), una extension(string), un contenido(string),
 ;                 la fecha de creacion(string), la fecha de ultima modificacion(string), atributo
 ;                 de seguridad "oculto"(char, #\h si se encuentra oculto, #\nul si no), atributo de seguridad
 ;                 "solo lectura"(char, #\r si se encuentra en modo solo lectura, #\nul si no), una lista vacia donde se guardaran

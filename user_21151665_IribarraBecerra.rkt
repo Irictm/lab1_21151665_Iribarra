@@ -3,7 +3,7 @@
 (require "date_21151665_IribarraBecerra.rkt")
 
 ; TDA user
-; Representacion: Una lista que contiene el nombre de usuario(string) y la fecha de creacion.
+; Representacion: Representado por un nombre de usuario(string) y la fecha de registro de este.
 
 
 ;---- Constructores ----;
@@ -13,7 +13,7 @@
 ; Dominio: user_name(string)
 ; Recorrido: user (list)
 ; Descripcion: Funcion constructora de user, recibe un nombre y entrega una
-;              lista con el nombre del usuario y su fecha de creacion.
+;              lista con el nombre del usuario y su fecha de registro.
 
 ;---- Selectores ----;
 
@@ -27,7 +27,7 @@
 ; Nombre: user_creation_date
 ; Dominio: user
 ; Recorrido: string
-; Descripcion: Funcion que recibe un user y entrega la fecha de creacion de este.
+; Descripcion: Funcion que recibe un user y entrega la fecha de registro de este.
 
 ;---- Pertenencia ----;
 

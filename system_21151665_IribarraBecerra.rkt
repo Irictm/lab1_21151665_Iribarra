@@ -6,7 +6,7 @@
          copy move ren dir format encrypt decrypt plus-one minus-one)
 
 ; TDA system
-; Representacion: Representado por una lista que contiene el nombre del sistema(string),
+; Representacion: Representado por un  nombre del sistema(string),
 ;                 una lista de drives(drives), una lista de usuarios(users), un path actual(path),
 ;                 el usuario activo actual(string), fecha de creacion(string) y fecha de ultima modificacion(string).
 
@@ -258,6 +258,7 @@
 ; Recorrido: system
 ; Descripcion: Funcion modificadora de system, recibe un sistema, un nombre y retorna el sistema
 ;              con el folder o file representado por el nombre entregado borrado de la locacion al final del path del sistema.
+; IMPLEMENTADA LA VERSION SIMPLE QUE SOLO PERMITE BORRAR UN CON NOMBRE ESPECIFICO
 
 (define rd (lambda (sys) (lambda (name_or_path)
                            (system_recreate
@@ -359,6 +360,7 @@
 ;              un string formateado que indica el contenido del folder al final del path actual. Si uno de los parametros
 ;              es "/s" se mostraran los subfolder dentro de este. Si uno de los paramteros es "/a" se mostraran los folders
 ;              o files ocultos. Se pueden entregar ambos para combinar los efectos.
+; SOLO IMPLEMENTADOS DIR BASE, "/s" y "/a".
 
 (define format (lambda (sys) (lambda (letter new_name)
                                (system_recreate

@@ -5,7 +5,7 @@
 (require "generic-functions_21151665_IribarraBecerra.rkt" "file_21151665_IribarraBecerra.rkt" "date_21151665_IribarraBecerra.rkt")
 
 ; TDA folder
-; Representacion: Representado por una lista que contiene un nombre(string), un interior(list) que contiene los folder y 
+; Representacion: Representado por un nombre(string), un interior(list) que contiene los folder y 
 ;                 files que contiene en su interior, el nombre del usuario creador(string), la fecha de creacion(string),
 ;                 la fecha de ultima modificacion(string), atributo de seguridad "oculto"(char, #\h si se encuentra oculto, #\nul si no),
 ;                 atributo de seguridad "solo lectura"(char, #\r si se encuentra en modo solo lectura, #\nul si no), una lista vacia donde se guardaran
